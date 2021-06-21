@@ -1,0 +1,11 @@
+app:
+  port: 9000
+
+database:
+  uri: admin:password@tcp(localhost:3306)/gin_sample
+  time_out:
+  max_idle_conns:
+  max_open_conns:
+  conn_max_life_time:
+  debug:
+
