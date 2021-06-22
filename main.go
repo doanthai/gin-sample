@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"gin-sample/config"
-	"gin-sample/src/router"
+	"gin-sample/config/db"
+	"gin-sample/entity"
+	"gin-sample/router"
 	"github.com/getsentry/raven-go"
 	"github.com/gin-contrib/sentry"
 	"github.com/gin-gonic/gin"
@@ -14,6 +16,9 @@ import (
 
 func main() {
 	cfg := config.GetConfig()
+
+	initDatabase(cfg)
+	defer closeDatabase()
 
 	r := initRouterDefault()
 
@@ -27,9 +32,11 @@ func main() {
 	}
 
 	fmt.Println("Listening and serving HTTP on :", cfg.App.Port)
-	s.ListenAndServe()
+	err := s.ListenAndServe()
+	if err != nil {
+		fmt.Println("Error create server", err)
+	}
 }
-
 func init() {
 	config.LoadConfig("local", "./config")
 
@@ -51,8 +58,20 @@ func init() {
 
 func initRouterDefault() *gin.Engine {
 
-	router := gin.Default()
-	router.Use(sentry.Recovery(raven.DefaultClient, false))
+	r := gin.Default()
+	r.Use(sentry.Recovery(raven.DefaultClient, false))
 
-	return router
+	return r
+}
+
+func initDatabase(cfg config.Config)  {
+	db.InitMysql(cfg.Database)
+	err := db.GetMysql().AutoMigrate(&entity.User{})
+	if err != nil {
+		fmt.Println("Error migrate database ", err)
+	}
+}
+
+func closeDatabase()  {
+	db.CloseMysql()
 }

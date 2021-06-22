@@ -2,10 +2,10 @@ app:
   port: 9000
 
 database:
-  uri: admin:password@tcp(localhost:3306)/gin_sample
-  time_out:
-  max_idle_conns:
-  max_open_conns:
+  uri: admin:password@tcp(localhost:3306)/gin_sample?charset=utf8mb4&parseTime=True
+  time_out: 30
+  max_idle_conns: 10
+  max_open_conns: 100
   conn_max_life_time:
-  debug:
+  debug: true
 

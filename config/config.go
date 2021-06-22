@@ -27,7 +27,8 @@ type TokenSettings struct {
 }
 
 type App struct {
-	Port string `yaml:"port"`
+	Port   string `yaml:"port"`
+	Secret string `yaml:"secret"`
 }
 
 var config Config
